@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Game {
+  id            String      @id @default(cuid())
+  code          String      @unique
+  status        String      @default("WAITING")
+  currentRound  Int         @default(1)
+  maxRounds     Int         @default(24)
+  mrXReveals    String      @default("3,8,13,18,24")
+  createdAt     DateTime    @default(now())
+  startedAt     DateTime?
+  endedAt       DateTime?
+  
+  // Relations
+  players       Player[]
+  moves         Move[]
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  username      String    @unique
+  passwordHash  String
+  createdAt     DateTime  @default(now())
+  
+  // Relations
+  players       Player[]
+}
+
+model Player {
+  id            String      @id @default(cuid())
+  gameId        String
+  userId        String
+  role          String
+  color         String?
+  location      Int         @default(1)
+  isActive      Boolean     @default(true)
+  
+  // Relations
+  game          Game        @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  user          User        @relation(fields: [userId], references: [id])
+  moves         Move[]
+  
+  @@unique([gameId, userId])
+}
+
+model Move {
+  id            String      @id @default(cuid())
+  gameId        String
+  playerId      String
+  round         Int
+  fromLocation  Int
+  toLocation    Int
+  transportType String
+  timestamp     DateTime    @default(now())
+  
+  // Relations
+  game          Game        @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  player        Player      @relation(fields: [playerId], references: [id], onDelete: Cascade)
+}
