@@ -3,6 +3,7 @@ import './App.css'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import HomePage from './pages/HomePage'
+import Lobby from './pages/Lobby'
 
 function App() {
 
@@ -15,6 +16,8 @@ function App() {
           <Route path='/register' element={ <Register /> } />
           
           <Route path='/home' element={ <HomePage /> } />
+
+          <Route path='/lobby' element={ <Lobby /> } />
         </Routes>
       </BrowserRouter>
     </>
